@@ -14,6 +14,7 @@ local M = {
     min_match_len = 1,
     max_match_len = math.huge,
     highlight_single_match = true,
+    underline_color = '#ff8800',
   },
   timing_info = {},
   usage_count = 0,
@@ -43,12 +44,12 @@ function M.stats()
     avg_time = avg_time + t
   end
   return string.format(
-    [[
-Total Usage Count    : %d
-Average Running Time : %f msec
+  [[
+  Total Usage Count    : %d
+  Average Running Time : %f msec
   ]],
-    M.usage_count,
-    avg_time / #M.timing_info
+  M.usage_count,
+  avg_time / #M.timing_info
   )
 end
 
@@ -217,9 +218,10 @@ end
 
 function M.setup(config)
   vim.api.nvim_set_hl(0, 'LocalHighlight', {
-    fg = '#dcd7ba',
-    bg = '#2d4f67',
+    underline = true,
     default = true,
+    -- Specify underline color
+    sp = M.config.underline_color,
   })
 
   M.config = vim.tbl_deep_extend('keep', config or {}, M.config)
