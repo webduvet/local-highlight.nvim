@@ -216,15 +216,23 @@ function M.detach(bufnr)
   M.last_cache[bufnr] = nil
 end
 
-function M.setup(config)
-  vim.api.nvim_set_hl(0, 'LocalHighlight', {
+
+local function set_highlight(group, config)
+  vim.api.nvim_set_hl(0, group, {
     underline = true,
     default = true,
-    -- Specify underline color
-    sp = M.config.underline_color,
+    sp = config.underline_color,
   })
+end
 
+function M.setup(config)
   M.config = vim.tbl_deep_extend('keep', config or {}, M.config)
+
+  set_highlight('LocalCurrentWord', M.config)
+  set_highlight('LocalHighlight', M.config)
+
+  M.config.cw_hlgroup = 'LocalCurrentWord' -- Ensure the current word highlight group is used
+
   local au = api.nvim_create_augroup('Highlight_usages_in_window', { clear = true })
   if M.config.file_types and #M.config.file_types > 0 then
     vim.api.nvim_create_autocmd('FileType', {
